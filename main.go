@@ -33,7 +33,7 @@ func loadConfig() config {
 		jwtPath:    getenv("VAULT_K8S_JWT_PATH", "/var/run/secrets/kubernetes.io/serviceaccount/token"),
 		kvMount:    getenv("VAULT_KV_MOUNT", "secret"),
 		kvPath:     getenv("VAULT_KV_PATH", "vault-tls-demo/config"),
-		kvRefresh:  getenvDuration("VAULT_KV_REFRESH_INTERVAL", 30*time.Second),
+		kvRefresh:  getenvDuration("VAULT_KV_REFRESH_INTERVAL", 10*time.Second),
 		certFile:   getenv("TLS_CERT_FILE", "/etc/certs/tls.crt"),
 		keyFile:    getenv("TLS_KEY_FILE", "/etc/certs/tls.key"),
 		listenAddr: getenv("LISTEN_ADDR", ":8443"),
@@ -90,6 +90,7 @@ func main() {
 			return
 		}
 		cache.set(data)
+		log.Printf("kv2: %s/%s = %v", cfg.kvMount, cfg.kvPath, data)
 	}
 	refreshSecret()
 	go func() {
